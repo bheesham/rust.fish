@@ -1,0 +1,31 @@
+# THIS FILE IS GENERATED!
+complete -e -c rustc
+
+{{r}} -s h -l help 
+
+{{r}} -x -l cfg
+{{r}} -r -s L -a 'dylib= static= framework='
+{{r}} -x -s l -a 'dylib= static= framework='
+{{r}} -x -l crate-type -a 'bin lib rlib dylib staticlib'
+{{r}} -r -l crate-name
+{{r}} -x -l emit -a 'asm llvm-bc llvm-ir obj link dep-info'
+{{r}} -x -l print -a 'crate-name file-names sysroot'
+{{r}} -s g
+{{r}} -s O
+{{r}} -r -l out-dir
+{{r}} -x -l explain
+{{r}} -l test
+{{r}} -l target
+{{r}} -x -l cap-lints
+{{r}} -s V -l version -d 'Print version info and exit'
+{{r}} -s v -l verbose -d 'Use verbose output'
+{{r}} -f -l extern
+{{r}} -f -l sysroot
+{{r}} -x -l color -a 'auto always never'
+
+{{r}} -x -s C -l codegen -a '{{codegen}}'
+{{r}} -x -s W -l warn -a '{{warn}}'
+{{r}} -x -s A -l allow -a '{{warn}}'
+{{r}} -x -s F -l deny -a '{{warn}}'
+{{r}} -x -s D -l forbid -a '{{warn}}'
+{{r}} -x -s Z -a '{{debug}}'
