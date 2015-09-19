@@ -1,10 +1,14 @@
 complete -e -c cargo
 
-complete -c cargo -s h -l help 
-complete -c cargo -s V -l version -d 'Print version info and exit'
-complete -c cargo -l list -d 'List installed commands'
-complete -c cargo -s v -l verbose -d 'Use verbose output'
-complete -c cargo -s q -l quiet -d 'No output printed to stdout'
+function _c
+	complete -c cargo $argv
+end
+
+_c -s h -l help 
+_c -s V -l version -d 'Print version info and exit'
+_c -l list -d 'List installed commands'
+_c -s v -l verbose -d 'Use verbose output'
+_c -s q -l quiet -d 'No output printed to stdout'
 
 set _cargo_commands (cargo --list | tail -n +2 | tr -d " ")
 
@@ -15,64 +19,81 @@ function _is
 	return 1
 end
 
-function _c
-	complete $argv
-end
-
 _c -f -c cargo -a '$_cargo_commands'
 
-# Help
-_c -f -c cargo -n '_is help' -s h -l help
-
-# Build and Bench are the same.
-set _cmds build bench
-for x in $_cmds;
-	_c -c cargo -n "_is $x" -s h -l help
-
-	_c -f -c cargo -n "_is $x" -s p -l package \
-		-d "Package to $x"
-
-	_c -f -c cargo -n "_is $x" -s j -l jobs \
-		-d 'The number of jobs to run in parallel'
-
-	_c -c cargo -n "_is $x" -l lib \
-		-d "only this package's library"
-
-	_c -f -c cargo -n "_is $x" -l bin \
-		-d "only the specified binary"
-
-	_c -f -c cargo -n "_is $x" -l example \
-		-d 'only the specified example'
-
-	_c -f -c cargo -n "_is $x" -l test \
-		-d 'only the specified test'
-
-	_c -f -c cargo -n "_is $x" -l bench \
-		-d 'only the specified benchmark'
-
-	_c -c cargo -n "_is $x" -l release \
-		-d 'artifacts in release mode, with optimizations'
-
-	_c -f -c cargo -n "_is $x" -l features \
-		-d 'Space-separated list of features to also build'
-
-	_c -c cargo -n "_is $x" -l no-default-features \
-		-d 'Do not build the `default` feature'
-
-	_c -f -c cargo -n "_is $x" -l target \
-		-d 'Build for the target triple'
-
-	_c -f -c cargo -n "_is $x" -l manifest-path \
-		-d 'Path to the manifest to compile'
+for x in bench build clean doc fetch generate-lockfile \
+		locate-project package pkgid publish \
+		read-manifest run rustc test update \
+		verify-project;
+	_c -r -n "_is $x" -l manifest-path
 end
 
-# Clean
-_c -f -c cargo -n '_is clean' -s p -l package \
-	-d "Package to clean artifacts for"
+for x in bench build clean doc rustc test update;
+	_c -x -n "_is $x" -s p -l spec
+end
 
-_c -f -c cargo -n '_is clean' -l manifest-path \
-	-d 'Path to the manifest to the package to clean'
+for x in bench build clean doc run rustc test;
+	_c -x -n "_is $x" -l target
+end
 
-_c -f -c cargo -n '_is clean' -l target \
-	-d 'Target triple to clean output for (default all)'
+for x in bench build rustc test;
+	_c -n "_is $x" -l bench
+	_c -n "_is $x" -l lib
+	_c -x -n "_is $x" -l test
+end
 
+for x in bench build run rustc test;
+	_c -x -n "_is $x" -l bin
+	_c -x -n "_is $x" -l example
+end
+
+for x in build run rustc test;
+	_c -n "_is $x" -l release
+end
+
+for x in bench test;
+	_c -n "_is $x" -l no-run
+end
+
+for x in bench build doc run rustc test;
+	_c -x -n "_is $x" -s j -l jobs
+	_c -x -n "_is $x" -l features
+	_c -n "_is $x" -l no-default-features
+end
+
+_c -n '_is doc' -l no-deps
+
+_c -x -n '_is new' -l vcs
+_c -x -n '_is new' -l name
+
+# This bin does not take any arguments which is why it is not defined above.
+_c -n '_is new' -l bin
+
+_c -x -n '_is git-checkout' -l url
+_c -x -n '_is git-checkout' -l reference
+
+for x in login publish search;
+	_c -x -n "_is $x" -l host
+end
+
+_c -n '_is doc' -l open
+
+_c -r -n '_is owner' -s a -l add 
+_c -r -n '_is owner' -s r -l remove 
+
+for x in owner yank;
+	_c -r -n "_is $x" -l index 
+end
+
+for x in owner publish yank;
+	_c -x -n "_is $x" -l token 
+end
+
+_c -n '_is package' -l no-verify 
+_c -n '_is package' -l no-metadata 
+
+_c -n '_is update' -l aggressive
+_c -x -n '_is update' -l precise
+
+_c -x -n '_is yank' -l vers
+_c -n '_is yank' -l undo
