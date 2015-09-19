@@ -1,4 +1,4 @@
-# THIS FILE IS GENERATED!
+# Tab completion for cargo (https://github.com/rust-lang/cargo).
 complete -e -c cargo
 
 {{c}} -s h -l help 
@@ -7,91 +7,91 @@ complete -e -c cargo
 {{c}} -s v -l verbose -d 'Use verbose output'
 {{c}} -s q -l quiet -d 'No output printed to stdout'
 
-set _cargo_commands (cargo --list | tail -n +2 | tr -d " ")
+set __fish_cargo_subcommands (cargo --list | tail -n +2 | tr -d " ")
 
-function _is
+function __fish_cargo_subcommand
 	if contains $argv (commandline -cop);
 		return 0
 	end
 	return 1
 end
 
-{{c}} -f -c cargo -n '__fish_use_subcommand' -a '$_cargo_commands'
-{{c}} -x -c cargo -n '_is help' -a '$_cargo_commands'
+{{c}} -f -c cargo -n '__fish_use_subcommand' -a '$__fish_cargo_subcommands'
+{{c}} -x -c cargo -n '{{s}} help' -a '$__fish_cargo_subcommands'
 
 for x in bench build clean doc fetch generate-lockfile \
 		locate-project package pkgid publish \
 		read-manifest run rustc test update \
 		verify-project;
-	{{c}} -r -n "_is $x" -l manifest-path
+	{{c}} -r -n "{{s}} $x" -l manifest-path
 end
 
 for x in bench build clean doc rustc test update;
-	{{c}} -x -n "_is $x" -s p -l spec
+	{{c}} -x -n "{{s}} $x" -s p -l spec
 end
 
 for x in bench build clean doc run rustc test;
-	{{c}} -x -n "_is $x" -l target
+	{{c}} -x -n "{{s}} $x" -l target
 end
 
 for x in bench build rustc test;
-	{{c}} -n "_is $x" -l bench
-	{{c}} -n "_is $x" -l lib
-	{{c}} -x -n "_is $x" -l test
+	{{c}} -n "{{s}} $x" -l bench
+	{{c}} -n "{{s}} $x" -l lib
+	{{c}} -x -n "{{s}} $x" -l test
 end
 
 for x in bench build run rustc test;
-	{{c}} -x -n "_is $x" -l bin
-	{{c}} -x -n "_is $x" -l example
+	{{c}} -x -n "{{s}} $x" -l bin
+	{{c}} -x -n "{{s}} $x" -l example
 end
 
 for x in build run rustc test;
-	{{c}} -n "_is $x" -l release
+	{{c}} -n "{{s}} $x" -l release
 end
 
 for x in bench test;
-	{{c}} -n "_is $x" -l no-run
+	{{c}} -n "{{s}} $x" -l no-run
 end
 
 for x in bench build doc run rustc test;
-	{{c}} -x -n "_is $x" -s j -l jobs
-	{{c}} -x -n "_is $x" -l features
-	{{c}} -n "_is $x" -l no-default-features
+	{{c}} -x -n "{{s}} $x" -s j -l jobs
+	{{c}} -x -n "{{s}} $x" -l features
+	{{c}} -n "{{s}} $x" -l no-default-features
 end
 
-{{c}} -n '_is doc' -l no-deps
+{{c}} -n '{{s}} doc' -l no-deps
 
-{{c}} -x -n '_is new' -l vcs
-{{c}} -x -n '_is new' -l name
+{{c}} -x -n '{{s}} new' -l vcs
+{{c}} -x -n '{{s}} new' -l name
 
 # This bin does not take any arguments which is why it is not defined above.
-{{c}} -n '_is new' -l bin
+{{c}} -n '{{s}} new' -l bin
 
-{{c}} -x -n '_is git-checkout' -l url
-{{c}} -x -n '_is git-checkout' -l reference
+{{c}} -x -n '{{s}} git-checkout' -l url
+{{c}} -x -n '{{s}} git-checkout' -l reference
 
 for x in login publish search;
-	{{c}} -x -n "_is $x" -l host
+	{{c}} -x -n "{{s}} $x" -l host
 end
 
-{{c}} -n '_is doc' -l open
+{{c}} -n '{{s}} doc' -l open
 
-{{c}} -r -n '_is owner' -s a -l add 
-{{c}} -r -n '_is owner' -s r -l remove 
+{{c}} -r -n '{{s}} owner' -s a -l add 
+{{c}} -r -n '{{s}} owner' -s r -l remove 
 
 for x in owner yank;
-	{{c}} -r -n "_is $x" -l index 
+	{{c}} -r -n "{{s}} $x" -l index 
 end
 
 for x in owner publish yank;
-	{{c}} -x -n "_is $x" -l token 
+	{{c}} -x -n "{{s}} $x" -l token 
 end
 
-{{c}} -n '_is package' -l no-verify 
-{{c}} -n '_is package' -l no-metadata 
+{{c}} -n '{{s}} package' -l no-verify 
+{{c}} -n '{{s}} package' -l no-metadata 
 
-{{c}} -n '_is update' -l aggressive
-{{c}} -x -n '_is update' -l precise
+{{c}} -n '{{s}} update' -l aggressive
+{{c}} -x -n '{{s}} update' -l precise
 
-{{c}} -x -n '_is yank' -l vers
-{{c}} -n '_is yank' -l undo
+{{c}} -x -n '{{s}} yank' -l vers
+{{c}} -n '{{s}} yank' -l undo

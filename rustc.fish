@@ -1,4 +1,4 @@
-# THIS FILE IS GENERATED!
+# Tab completion for rustc (https://github.com/rust-lang/rust).
 complete -e -c rustc
 
 complete -c rustc -s h -l help 

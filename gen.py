@@ -54,4 +54,5 @@ with open('rustc.fish', 'w') as handle:
 with open('cargo.fish', 'w') as handle:
 	handle.write(cargo_config.render(
 					c='complete -c cargo',
+					s='__fish_cargo_subcommand'
 	))
