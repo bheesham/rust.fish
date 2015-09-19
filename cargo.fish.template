@@ -64,28 +64,28 @@ end
 {{c}} -x -n '{{s}} git-checkout' -l reference
 
 for x in login publish search;
-	{{c}} -x -n "{{s}} $x" -l host
+	{{c}} -x -n "{{s}} $x" -l host -d 'The host to submit the request to'
 end
 
-{{c}} -n '{{s}} doc' -l open
+{{c}} -n '{{s}} doc' -l open -d 'Opens the docs in a browser after the operation'
 
-{{c}} -r -n '{{s}} owner' -s a -l add 
-{{c}} -r -n '{{s}} owner' -s r -l remove 
+{{c}} -r -n '{{s}} owner' -s a -l add -d 'Login of a user to add as an owner'
+{{c}} -r -n '{{s}} owner' -s r -l remove  -d 'Login of a user to remove as an owner'
 
 for x in owner yank;
-	{{c}} -r -n "{{s}} $x" -l index 
+	{{c}} -r -n "{{s}} $x" -l index -d 'Registry index to use'
 end
 
 for x in owner publish yank;
-	{{c}} -x -n "{{s}} $x" -l token 
+	{{c}} -x -n "{{s}} $x" -l token -d 'API token to use when authenticating'
 end
 
-{{c}} -n '{{s}} package' -l no-verify 
-{{c}} -n '{{s}} package' -l no-metadata 
+{{c}} -n '{{s}} package' -l no-verify -d 'Don\'t verify the contents by building them'
+{{c}} -n '{{s}} package' -l no-metadata -d 'Ignore warnings about a lack of human-usable metadata'
 
-{{c}} -n '{{s}} update' -l aggressive
-{{c}} -x -n '{{s}} update' -l precise
+{{c}} -n '{{s}} update' -l aggressive -d 'Force updating all dependencies of <name> as well'
+{{c}} -x -n '{{s}} update' -l precise -d 'Update a single dependency to exactly PRECISE'
 
-{{c}} -x -n '{{s}} yank' -l vers
-{{c}} -n '{{s}} yank' -l undo
+{{c}} -x -n '{{s}} yank' -l vers -d 'The version to yank or un-yank'
+{{c}} -n '{{s}} yank' -l undo -d 'Undo a yank, putting a version back into the index'
 

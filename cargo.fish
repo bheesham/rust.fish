@@ -64,28 +64,28 @@ complete -c cargo -x -n '__fish_seen_subcommand_from git-checkout' -l url
 complete -c cargo -x -n '__fish_seen_subcommand_from git-checkout' -l reference
 
 for x in login publish search;
-	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l host
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l host -d 'The host to submit the request to'
 end
 
-complete -c cargo -n '__fish_seen_subcommand_from doc' -l open
+complete -c cargo -n '__fish_seen_subcommand_from doc' -l open -d 'Opens the docs in a browser after the operation'
 
-complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s a -l add 
-complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s r -l remove 
+complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s a -l add -d 'Login of a user to add as an owner'
+complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s r -l remove  -d 'Login of a user to remove as an owner'
 
 for x in owner yank;
-	complete -c cargo -r -n "__fish_seen_subcommand_from $x" -l index 
+	complete -c cargo -r -n "__fish_seen_subcommand_from $x" -l index -d 'Registry index to use'
 end
 
 for x in owner publish yank;
-	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l token 
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l token -d 'API token to use when authenticating'
 end
 
-complete -c cargo -n '__fish_seen_subcommand_from package' -l no-verify 
-complete -c cargo -n '__fish_seen_subcommand_from package' -l no-metadata 
+complete -c cargo -n '__fish_seen_subcommand_from package' -l no-verify -d 'Don\'t verify the contents by building them'
+complete -c cargo -n '__fish_seen_subcommand_from package' -l no-metadata -d 'Ignore warnings about a lack of human-usable metadata'
 
-complete -c cargo -n '__fish_seen_subcommand_from update' -l aggressive
-complete -c cargo -x -n '__fish_seen_subcommand_from update' -l precise
+complete -c cargo -n '__fish_seen_subcommand_from update' -l aggressive -d 'Force updating all dependencies of <name> as well'
+complete -c cargo -x -n '__fish_seen_subcommand_from update' -l precise -d 'Update a single dependency to exactly PRECISE'
 
-complete -c cargo -x -n '__fish_seen_subcommand_from yank' -l vers
-complete -c cargo -n '__fish_seen_subcommand_from yank' -l undo
+complete -c cargo -x -n '__fish_seen_subcommand_from yank' -l vers -d 'The version to yank or un-yank'
+complete -c cargo -n '__fish_seen_subcommand_from yank' -l undo -d 'Undo a yank, putting a version back into the index'
 
