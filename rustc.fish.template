@@ -29,3 +29,4 @@ complete -e -c rustc
 {{r}} -x -s F -l deny -a '{{warn}}'
 {{r}} -x -s D -l forbid -a '{{warn}}'
 {{r}} -x -s Z -a '{{debug}}'
+

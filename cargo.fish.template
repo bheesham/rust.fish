@@ -9,13 +9,6 @@ complete -e -c cargo
 
 set __fish_cargo_subcommands (cargo --list | tail -n +2 | tr -d " ")
 
-function __fish_cargo_subcommand
-	if contains $argv (commandline -cop);
-		return 0
-	end
-	return 1
-end
-
 {{c}} -f -c cargo -n '__fish_use_subcommand' -a '$__fish_cargo_subcommands'
 {{c}} -x -c cargo -n '{{s}} help' -a '$__fish_cargo_subcommands'
 
@@ -23,45 +16,45 @@ for x in bench build clean doc fetch generate-lockfile \
 		locate-project package pkgid publish \
 		read-manifest run rustc test update \
 		verify-project;
-	{{c}} -r -n "{{s}} $x" -l manifest-path
+	{{c}} -r -n "{{s}} $x" -l manifest-path -d 'path to the manifest to compile'
 end
 
 for x in bench build clean doc rustc test update;
-	{{c}} -x -n "{{s}} $x" -s p -l spec
+	{{c}} -x -n "{{s}} $x" -s p -l spec -d 'Package to build'
 end
 
 for x in bench build clean doc run rustc test;
-	{{c}} -x -n "{{s}} $x" -l target
+	{{c}} -x -n "{{s}} $x" -l target -d 'Build for the target triple'
 end
 
 for x in bench build rustc test;
-	{{c}} -n "{{s}} $x" -l bench
-	{{c}} -n "{{s}} $x" -l lib
-	{{c}} -x -n "{{s}} $x" -l test
+	{{c}} -x -n "{{s}} $x" -l bench -d 'Only the specified benchmark'
+	{{c}} -n "{{s}} $x" -l lib -d 'Only this package\'s library'
+	{{c}} -x -n "{{s}} $x" -l test -d 'Only the specified test'
 end
 
 for x in bench build run rustc test;
-	{{c}} -x -n "{{s}} $x" -l bin
-	{{c}} -x -n "{{s}} $x" -l example
+	{{c}} -x -n "{{s}} $x" -l bin -d 'Only the specified binary'
+	{{c}} -x -n "{{s}} $x" -l example -d 'Only the specified example'
 end
 
 for x in build run rustc test;
-	{{c}} -n "{{s}} $x" -l release
+	{{c}} -n "{{s}} $x" -l release -d 'Build artifacts in release mode, with optimizations'
 end
 
 for x in bench test;
-	{{c}} -n "{{s}} $x" -l no-run
+	{{c}} -n "{{s}} $x" -l no-run -d 'Compile but do not run'
 end
 
 for x in bench build doc run rustc test;
-	{{c}} -x -n "{{s}} $x" -s j -l jobs
-	{{c}} -x -n "{{s}} $x" -l features
-	{{c}} -n "{{s}} $x" -l no-default-features
+	{{c}} -x -n "{{s}} $x" -s j -l jobs -d  'Number of jobs to run in parallel'
+	{{c}} -x -n "{{s}} $x" -l features -d 'Space-separated list of features to also build'
+	{{c}} -n "{{s}} $x" -l no-default-features -d 'Do not build the `default` feature'
 end
 
-{{c}} -n '{{s}} doc' -l no-deps
+{{c}} -n '{{s}} doc' -l no-deps -d 'Don\'t build documentation for dependencies'
 
-{{c}} -x -n '{{s}} new' -l vcs
+{{c}} -x -n '{{s}} new' -l vcs -a 'none hg git' -d 'Specify a vcs to use'
 {{c}} -x -n '{{s}} new' -l name
 
 # This bin does not take any arguments which is why it is not defined above.
@@ -95,3 +88,4 @@ end
 
 {{c}} -x -n '{{s}} yank' -l vers
 {{c}} -n '{{s}} yank' -l undo
+
