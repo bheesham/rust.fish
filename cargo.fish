@@ -16,7 +16,8 @@ function _is
 	return 1
 end
 
-complete -c cargo -f -c cargo -a '$_cargo_commands'
+complete -c cargo -f -c cargo -n '__fish_use_subcommand' -a '$_cargo_commands'
+complete -c cargo -x -c cargo -n '_is help' -a '$_cargo_commands'
 
 for x in bench build clean doc fetch generate-lockfile \
 		locate-project package pkgid publish \
