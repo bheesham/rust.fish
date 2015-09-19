@@ -50,8 +50,11 @@ with open('rustc.fish', 'w') as handle:
 					warn=' '.join(warnings),
 					debug=' '.join(debug)
 	))
+	handle.write('\n')
 
 with open('cargo.fish', 'w') as handle:
 	handle.write(cargo_config.render(
 					c='complete -c cargo',
+					s='__fish_seen_subcommand_from'
 	))
+	handle.write('\n')

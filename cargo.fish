@@ -1,4 +1,4 @@
-# THIS FILE IS GENERATED!
+# Tab completion for cargo (https://github.com/rust-lang/cargo).
 complete -e -c cargo
 
 complete -c cargo -s h -l help 
@@ -7,90 +7,85 @@ complete -c cargo -l list -d 'List installed commands'
 complete -c cargo -s v -l verbose -d 'Use verbose output'
 complete -c cargo -s q -l quiet -d 'No output printed to stdout'
 
-set _cargo_commands (cargo --list | tail -n +2 | tr -d " ")
+set __fish_cargo_subcommands (cargo --list | tail -n +2 | tr -d " ")
 
-function _is
-	if contains $argv (commandline -cop);
-		return 0
-	end
-	return 1
-end
-
-complete -c cargo -f -c cargo -a '$_cargo_commands'
+complete -c cargo -f -c cargo -n '__fish_use_subcommand' -a '$__fish_cargo_subcommands'
+complete -c cargo -x -c cargo -n '__fish_seen_subcommand_from help' -a '$__fish_cargo_subcommands'
 
 for x in bench build clean doc fetch generate-lockfile \
 		locate-project package pkgid publish \
 		read-manifest run rustc test update \
 		verify-project;
-	complete -c cargo -r -n "_is $x" -l manifest-path
+	complete -c cargo -r -n "__fish_seen_subcommand_from $x" -l manifest-path -d 'path to the manifest to compile'
 end
 
 for x in bench build clean doc rustc test update;
-	complete -c cargo -x -n "_is $x" -s p -l spec
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -s p -l spec -d 'Package to build'
 end
 
 for x in bench build clean doc run rustc test;
-	complete -c cargo -x -n "_is $x" -l target
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l target -d 'Build for the target triple'
 end
 
 for x in bench build rustc test;
-	complete -c cargo -n "_is $x" -l bench
-	complete -c cargo -n "_is $x" -l lib
-	complete -c cargo -x -n "_is $x" -l test
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l bench -d 'Only the specified benchmark'
+	complete -c cargo -n "__fish_seen_subcommand_from $x" -l lib -d 'Only this package\'s library'
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l test -d 'Only the specified test'
 end
 
 for x in bench build run rustc test;
-	complete -c cargo -x -n "_is $x" -l bin
-	complete -c cargo -x -n "_is $x" -l example
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l bin -d 'Only the specified binary'
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l example -d 'Only the specified example'
 end
 
 for x in build run rustc test;
-	complete -c cargo -n "_is $x" -l release
+	complete -c cargo -n "__fish_seen_subcommand_from $x" -l release -d 'Build artifacts in release mode, with optimizations'
 end
 
 for x in bench test;
-	complete -c cargo -n "_is $x" -l no-run
+	complete -c cargo -n "__fish_seen_subcommand_from $x" -l no-run -d 'Compile but do not run'
 end
 
 for x in bench build doc run rustc test;
-	complete -c cargo -x -n "_is $x" -s j -l jobs
-	complete -c cargo -x -n "_is $x" -l features
-	complete -c cargo -n "_is $x" -l no-default-features
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -s j -l jobs -d  'Number of jobs to run in parallel'
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l features -d 'Space-separated list of features to also build'
+	complete -c cargo -n "__fish_seen_subcommand_from $x" -l no-default-features -d 'Do not build the `default` feature'
 end
 
-complete -c cargo -n '_is doc' -l no-deps
+complete -c cargo -n '__fish_seen_subcommand_from doc' -l no-deps -d 'Don\'t build documentation for dependencies'
 
-complete -c cargo -x -n '_is new' -l vcs
-complete -c cargo -x -n '_is new' -l name
+complete -c cargo -x -n '__fish_seen_subcommand_from new' -l vcs -a 'none hg git' -d 'Specify a vcs to use'
+complete -c cargo -x -n '__fish_seen_subcommand_from new' -l name
 
 # This bin does not take any arguments which is why it is not defined above.
-complete -c cargo -n '_is new' -l bin
+complete -c cargo -n '__fish_seen_subcommand_from new' -l bin
 
-complete -c cargo -x -n '_is git-checkout' -l url
-complete -c cargo -x -n '_is git-checkout' -l reference
+complete -c cargo -x -n '__fish_seen_subcommand_from git-checkout' -l url
+complete -c cargo -x -n '__fish_seen_subcommand_from git-checkout' -l reference
 
 for x in login publish search;
-	complete -c cargo -x -n "_is $x" -l host
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l host
 end
 
-complete -c cargo -n '_is doc' -l open
+complete -c cargo -n '__fish_seen_subcommand_from doc' -l open
 
-complete -c cargo -r -n '_is owner' -s a -l add 
-complete -c cargo -r -n '_is owner' -s r -l remove 
+complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s a -l add 
+complete -c cargo -r -n '__fish_seen_subcommand_from owner' -s r -l remove 
 
 for x in owner yank;
-	complete -c cargo -r -n "_is $x" -l index 
+	complete -c cargo -r -n "__fish_seen_subcommand_from $x" -l index 
 end
 
 for x in owner publish yank;
-	complete -c cargo -x -n "_is $x" -l token 
+	complete -c cargo -x -n "__fish_seen_subcommand_from $x" -l token 
 end
 
-complete -c cargo -n '_is package' -l no-verify 
-complete -c cargo -n '_is package' -l no-metadata 
+complete -c cargo -n '__fish_seen_subcommand_from package' -l no-verify 
+complete -c cargo -n '__fish_seen_subcommand_from package' -l no-metadata 
 
-complete -c cargo -n '_is update' -l aggressive
-complete -c cargo -x -n '_is update' -l precise
+complete -c cargo -n '__fish_seen_subcommand_from update' -l aggressive
+complete -c cargo -x -n '__fish_seen_subcommand_from update' -l precise
 
-complete -c cargo -x -n '_is yank' -l vers
-complete -c cargo -n '_is yank' -l undo
+complete -c cargo -x -n '__fish_seen_subcommand_from yank' -l vers
+complete -c cargo -n '__fish_seen_subcommand_from yank' -l undo
+

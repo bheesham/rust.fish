@@ -1,4 +1,4 @@
-# THIS FILE IS GENERATED!
+# Tab completion for rustc (https://github.com/rust-lang/rust).
 complete -e -c rustc
 
 {{r}} -s h -l help 
@@ -29,3 +29,4 @@ complete -e -c rustc
 {{r}} -x -s F -l deny -a '{{warn}}'
 {{r}} -x -s D -l forbid -a '{{warn}}'
 {{r}} -x -s Z -a '{{debug}}'
+
