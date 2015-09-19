@@ -1,7 +1,7 @@
 rust.fish
 =========
 
-Tab completions for cargo! And soon maybe rustc!
+Tab completions for `rustc` and `cargo`!
 
 Installation
 ------------
@@ -9,6 +9,7 @@ Installation
 Clone this repo, then in your `.config/fish/config.fish` file, add:
 
 `
+source /path/to/rustc.fish
 source /path/to/cargo.fish
 `
 
