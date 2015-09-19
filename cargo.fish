@@ -1,3 +1,4 @@
+# THIS FILE IS GENERATED!
 complete -e -c cargo
 
 complete -c cargo -s h -l help 
