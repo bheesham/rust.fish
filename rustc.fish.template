@@ -24,9 +24,10 @@ complete -e -c rustc
 {{r}} -x -l color -a 'auto always never'
 
 {{r}} -x -s C -l codegen -a '{{codegen}}'
-{{r}} -x -s W -l warn -a '{{warn}}'
-{{r}} -x -s A -l allow -a '{{warn}}'
-{{r}} -x -s F -l deny -a '{{warn}}'
-{{r}} -x -s D -l forbid -a '{{warn}}'
+
+{% for warn in warnings %}
+{{r}} -x -s {{ warn.short }} -l {{ warn.long }} -a '{{warn.arg}}' -d "{{warn.desc}}"
+{% endfor %}
+
 {{r}} -x -s Z -a '{{debug}}'
 

@@ -24,14 +24,47 @@ for match in codegen_re.finditer(codegen_out):
 		codegen.append(val)
 
 # Warnings
-warning_re = re.compile('(\s+)(?P<var>[a-z\-]+)(\s+)(allow|warn|deny)(\s+){2}(.+)')
+warning_re = re.compile('(\s+)(?P<arg>[a-z\-]+)(\s+)(allow|warn|deny)(\s+){2}(?P<desc>[^\n]+)')
 warning_out, _ = subprocess.Popen(
 					['rustc','-W', 'help'],
 					stdout=subprocess.PIPE).communicate()
-warnings = []
+warning_arguments = []
 for match in warning_re.finditer(warning_out):
-	val = match.group('var')
-	warnings.append(val)
+	arg = match.group('arg') desc = match.group('desc')
+	warning_arguments.append({
+		'arg': arg,
+		'desc': desc.strip()
+	})
+
+warnings = []
+warning_flags = [
+		{
+			'short': 'W',
+			'long': 'warn'
+		},
+		{
+			'short': 'A',
+			'long': 'allow'
+		},
+		{
+			'short': 'D',
+			'long': 'deny'
+		},
+		{
+			'short': 'F',
+			'long': 'forbid'
+		}
+]
+
+for flag in warning_flags:
+	for arg in warning_arguments:
+		warnings.append({
+			'short': flag['short'],
+			'long': flag['long'],
+			'arg': arg['arg'],
+			'desc': arg['desc']
+		})
+
 
 # Internal debugging
 debug_re = re.compile('(\s+)-Z(\s+)(?P<var>[a-z\-]+)(\s+)--(.+)')
@@ -47,7 +80,7 @@ with open('rustc.fish', 'w') as handle:
 	handle.write(rust_config.render(
 					r='complete -c rustc',
 					codegen=' '.join(codegen),
-					warn=' '.join(warnings),
+					warnings=warnings,
 					debug=' '.join(debug)
 	))
 	handle.write('\n')
