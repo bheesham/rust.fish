@@ -13,8 +13,9 @@ cargo_config = env.get_template('cargo.fish.template')
 # Codegen
 codegen_re = re.compile('(\s+)-C(?P<arg>.+)(\s+)--(\s+)(?P<desc>[^\n]+)')
 codegen_out, _ = subprocess.Popen(
-					['rustc','-C', 'help'],
-					stdout=subprocess.PIPE).communicate()
+	['rustc','-C', 'help'],
+	stdout=subprocess.PIPE).communicate()
+
 codegens = []
 for match in codegen_re.finditer(codegen_out):
 	arg = match.group('arg')
@@ -29,8 +30,9 @@ for match in codegen_re.finditer(codegen_out):
 # Warnings
 warning_re = re.compile('(\s+)(?P<arg>.+)(\s+)(allow|warn|deny)(\s+){2}(?P<desc>[^\n]+)')
 warning_out, _ = subprocess.Popen(
-					['rustc','-W', 'help'],
-					stdout=subprocess.PIPE).communicate()
+	['rustc','-W', 'help'],
+	stdout=subprocess.PIPE).communicate()
+
 warning_arguments = []
 for match in warning_re.finditer(warning_out):
 	warning_arguments.append({
@@ -40,22 +42,22 @@ for match in warning_re.finditer(warning_out):
 
 warnings = []
 warning_flags = [
-		{
-			'short': 'W',
-			'long': 'warn'
-		},
-		{
-			'short': 'A',
-			'long': 'allow'
-		},
-		{
-			'short': 'D',
-			'long': 'deny'
-		},
-		{
-			'short': 'F',
-			'long': 'forbid'
-		}
+	{
+		'short': 'W',
+		'long': 'warn'
+	},
+	{
+		'short': 'A',
+		'long': 'allow'
+	},
+	{
+		'short': 'D',
+		'long': 'deny'
+	},
+	{
+		'short': 'F',
+		'long': 'forbid'
+	}
 ]
 
 for flag in warning_flags:
@@ -69,8 +71,9 @@ for flag in warning_flags:
 # Internal debugging
 debug_re = re.compile('(\s+)-Z(?P<arg>.+)(\s+)--(\s+)(?P<desc>[^\n]+)')
 debug_out, _ = subprocess.Popen(
-					['rustc','-Z', 'help'],
-					stdout=subprocess.PIPE).communicate()
+		['rustc','-Z', 'help'],
+		stdout=subprocess.PIPE).communicate()
+
 debugs = []
 for match in debug_re.finditer(debug_out):
 	debugs.append({
@@ -80,16 +83,16 @@ for match in debug_re.finditer(debug_out):
 
 with open('rustc.fish', 'w') as handle:
 	handle.write(rust_config.render(
-					r='complete -c rustc',
-					codegens=codegens,
-					warnings=warnings,
-					debugs=debugs
+		r='complete -c rustc',
+		codegens=codegens,
+		warnings=warnings,
+		debugs=debugs
 	))
 	handle.write('\n')
 
 with open('cargo.fish', 'w') as handle:
 	handle.write(cargo_config.render(
-					c='complete -c cargo',
-					s='__fish_seen_subcommand_from'
+		c='complete -c cargo',
+		s='__fish_seen_subcommand_from'
 	))
 	handle.write('\n')
