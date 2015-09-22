@@ -11,29 +11,31 @@ cargo_config = env.get_template('cargo.fish.template')
 
 
 # Codegen
-codegen_re = re.compile('(\s+)-C(\s+)(?P<var>[a-z\[\]\=\-]+)(\s+)--(.+)')
+codegen_re = re.compile('(\s+)-C(?P<arg>.+)(\s+)--(\s+)(?P<desc>[^\n]+)')
 codegen_out, _ = subprocess.Popen(
 					['rustc','-C', 'help'],
 					stdout=subprocess.PIPE).communicate()
-codegen = []
+codegens = []
 for match in codegen_re.finditer(codegen_out):
-	val = match.group('var')
-	if '=' in val:
-		codegen.append(val[:val.index('=')+1])
-	else:
-		codegen.append(val)
+	arg = match.group('arg')
+	if '=' in arg:
+		arg = arg[:arg.index('=')+1]
+	
+	codegens.append({
+		'arg': arg.strip(),
+		'desc': match.group('desc').strip()
+	})
 
 # Warnings
-warning_re = re.compile('(\s+)(?P<arg>[a-z\-]+)(\s+)(allow|warn|deny)(\s+){2}(?P<desc>[^\n]+)')
+warning_re = re.compile('(\s+)(?P<arg>.+)(\s+)(allow|warn|deny)(\s+){2}(?P<desc>[^\n]+)')
 warning_out, _ = subprocess.Popen(
 					['rustc','-W', 'help'],
 					stdout=subprocess.PIPE).communicate()
 warning_arguments = []
 for match in warning_re.finditer(warning_out):
-	arg = match.group('arg') desc = match.group('desc')
 	warning_arguments.append({
-		'arg': arg,
-		'desc': desc.strip()
+		'arg': match.group('arg').strip(),
+		'desc': match.group('desc').strip()
 	})
 
 warnings = []
@@ -59,29 +61,29 @@ warning_flags = [
 for flag in warning_flags:
 	for arg in warning_arguments:
 		warnings.append({
-			'short': flag['short'],
-			'long': flag['long'],
-			'arg': arg['arg'],
+			'short': flag['short'], 'long': flag['long'], 'arg': arg['arg'],
 			'desc': arg['desc']
 		})
 
 
 # Internal debugging
-debug_re = re.compile('(\s+)-Z(\s+)(?P<var>[a-z\-]+)(\s+)--(.+)')
+debug_re = re.compile('(\s+)-Z(?P<arg>.+)(\s+)--(\s+)(?P<desc>[^\n]+)')
 debug_out, _ = subprocess.Popen(
 					['rustc','-Z', 'help'],
 					stdout=subprocess.PIPE).communicate()
-debug = []
+debugs = []
 for match in debug_re.finditer(debug_out):
-	val = match.group('var')
-	debug.append(val)
+	debugs.append({
+		'arg': match.group('arg').strip(),
+		'desc': match.group('desc').strip()
+	})
 
 with open('rustc.fish', 'w') as handle:
 	handle.write(rust_config.render(
 					r='complete -c rustc',
-					codegen=' '.join(codegen),
+					codegens=codegens,
 					warnings=warnings,
-					debug=' '.join(debug)
+					debugs=debugs
 	))
 	handle.write('\n')
 
