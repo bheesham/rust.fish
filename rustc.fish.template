@@ -22,13 +22,47 @@ complete -e -c rustc
 {{r}} -f -l extern
 {{r}} -f -l sysroot
 {{r}} -x -l color -a 'auto always never'
-{% for cg in codegens %}
-{{r}} -x -s C -l codegen -a '{{ cg.arg }}' -d "{{ cg.desc }}"
-{%- endfor %}
-{% for warn in warnings %}
-{{r}} -x -s {{ warn.short }} -l {{ warn.long }} -a '{{warn.arg}}' -d "{{warn.desc}}"
-{%- endfor %}
-{% for debug in debugs %}
-{{r}} -x -s Z -a '{{ debug.arg }}' -d "{{ debug.desc }}"
-{%- endfor %}
+
+set -l rust_codegen (string trim (string match -r -i  \
+                            '(\s+)-C(.+)(\s+)--(\s+)([^\n]+)' \
+                            (rustc -C help)) | egrep -v '^$' | egrep -v '^-C')
+
+for i in (seq (count $rust_codegen))
+    if test (math $i%2) -eq 0
+        set -l flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
+            $rust_codegen[(math $i-1)])
+        {{r}} -x -s C -l codegen -a "$flag" -d "$rust_codegen[$i]"
+    end
+end
+
+set -l rust_codegen (string trim (string match -r -i  \
+                            '(\s+)-Z(.+)--(\s+)([^\n]+)' \
+                            (rustc -Z help)) | egrep -v '^$' | egrep -v '^-Z')
+
+for i in (seq (count $rust_codegen))
+    if test (math $i%2) -eq 0
+        set -l flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
+            $rust_codegen[(math $i-1)])
+        {{r}} -x -s Z -a "$flag" -d "$rust_codegen[$i]"
+    end
+end
+
+set -l rust_codegen (string trim (string match -r -i  \
+                            '(\s+)(.+)(\s+)(allow|warn|deny|forbid)(\s+){2}([^\n]+)' \
+                            (rustc -Z help)) | \
+                            egrep -v '^$' | \
+                            egrep -v '^(allow|warn|deny|forbid)$' | \
+                            egrep -v '^([a-z\-]+)(\s+)(allow|warn|deny|forbid)')
+
+for i in (seq (count $rust_codegen))
+    if test (math $i%2) -eq 0
+        set -l flag $rust_codegen[(math $i-1)]
+        {{r}} -x -s W -l warn -a "$flag" -d "$rust_codegen[$i]"
+        {{r}} -x -s A -l allow -a "$flag" -d "$rust_codegen[$i]"
+        {{r}} -x -s D -l deny -a "$flag" -d "$rust_codegen[$i]"
+        {{r}} -x -s F -l forbid -a "$flag" -d "$rust_codegen[$i]"
+    end
+end
+
+set -e rust_codegen
 
