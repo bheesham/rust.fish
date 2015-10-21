@@ -23,9 +23,10 @@ complete -e -c rustc
 {{r}} -f -l sysroot
 {{r}} -x -l color -a 'auto always never'
 
-set -l rust_codegen (string trim (string match -r -i  \
-                            '(\s+)-C(.+)(\s+)--(\s+)([^\n]+)' \
-                            (rustc -C help)) | egrep -v '^$' | egrep -v '^-C')
+set -l rust_codegen (rustc -C help \
+                        | string match -r -i '(\s+)-C(.+)(\s+)--(\s+)([^\n]+)' \
+                        | string trim \
+                        | egrep -v '^$' | egrep -v '^-C')
 
 for i in (seq (count $rust_codegen))
     if test (math $i%2) -eq 0
@@ -35,9 +36,10 @@ for i in (seq (count $rust_codegen))
     end
 end
 
-set -l rust_codegen (string trim (string match -r -i  \
-                            '(\s+)-Z(.+)--(\s+)([^\n]+)' \
-                            (rustc -Z help)) | egrep -v '^$' | egrep -v '^-Z')
+set -l rust_codegen (rustc -Z help \
+                        | string match -r -i '(\s+)-Z(.+)--(\s+)([^\n]+)' \
+                        | string trim \
+                        | egrep -v '^$' | egrep -v '^-Z')
 
 for i in (seq (count $rust_codegen))
     if test (math $i%2) -eq 0
@@ -47,12 +49,12 @@ for i in (seq (count $rust_codegen))
     end
 end
 
-set -l rust_codegen (string trim (string match -r -i  \
+set -l rust_codegen (rustc -Z help  \
+                        | string match -r -i \
                             '(\s+)(.+)(\s+)(allow|warn|deny|forbid)(\s+){2}([^\n]+)' \
-                            (rustc -Z help)) | \
-                            egrep -v '^$' | \
-                            egrep -v '^(allow|warn|deny|forbid)$' | \
-                            egrep -v '^([a-z\-]+)(\s+)(allow|warn|deny|forbid)')
+                        | egrep -v '^$' \
+                        | egrep -v '^(allow|warn|deny|forbid)$' \
+                        | egrep -v '^([a-z\-]+)(\s+)(allow|warn|deny|forbid)')
 
 for i in (seq (count $rust_codegen))
     if test (math $i%2) -eq 0
