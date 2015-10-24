@@ -1,4 +1,5 @@
 # Tab completion for rustc (https://github.com/rust-lang/rust).
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 complete -e -c rustc
 
 {{r}} -s h -l help 
@@ -23,47 +24,46 @@ complete -e -c rustc
 {{r}} -f -l sysroot
 {{r}} -x -l color -a 'auto always never'
 
-set -l rust_codegen (rustc -C help \
-                        | string match -r -i '(\s+)-C(.+)(\s+)--(\s+)([^\n]+)' \
-                        | string trim \
-                        | egrep -v '^$' | egrep -v '^-C')
+set -l rust_docs (rustc -C help \
+    | string replace -r -i '(\s+)-C(.+)(\s+)--(\s+)([^\n]+)' '$2 $5' \
+    | string trim \
+    | egrep -v '^$' | egrep -v ':$')
 
-for i in (seq (count $rust_codegen))
-    if test (math $i%2) -eq 0
-        set -l flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
-            $rust_codegen[(math $i-1)])
-        {{r}} -x -s C -l codegen -a "$flag" -d "$rust_codegen[$i]"
-    end
+for line in $rust_docs
+    set docs (string split -m 1 ' ' $line)
+    set flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
+                                $docs[1])
+    {{r}} -x -s C -l codegen -a "$flag" -d "$docs[2]"
 end
 
-set -l rust_codegen (rustc -Z help \
-                        | string match -r -i '(\s+)-Z(.+)--(\s+)([^\n]+)' \
-                        | string trim \
-                        | egrep -v '^$' | egrep -v '^-Z')
+set -l rust_docs (rustc -Z help \
+    | string replace -r -i '(\s+)-Z(.+)--(\s+)([^\n]+)' '$2 $4' \
+    | string trim \
+    | egrep -v '^$' | egrep -v ':$')
 
-for i in (seq (count $rust_codegen))
-    if test (math $i%2) -eq 0
-        set -l flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
-            $rust_codegen[(math $i-1)])
-        {{r}} -x -s Z -a "$flag" -d "$rust_codegen[$i]"
-    end
+for line in $rust_docs
+    set docs (string split -m 1 ' ' $line)
+    set flag (string replace -r '^([a-z\-]+\=|[a-z\-]+)(.*)' '$1' \
+                                   $docs[1])
+    {{r}} -x -s Z -a "$flag" -d "$docs[2]"
 end
 
-set -l rust_codegen (rustc -Z help  \
-                        | string match -r -i \
-                            '(\s+)(.+)(\s+)(allow|warn|deny|forbid)(\s+){2}([^\n]+)' \
-                        | egrep -v '^$' \
-                        | egrep -v '^(allow|warn|deny|forbid)$' \
-                        | egrep -v '^([a-z\-]+)(\s+)(allow|warn|deny|forbid)')
+set -l rust_docs (rustc -W help  \
+    | egrep \
+        '(\s+)(.+)(\s+)(allow|warn|deny|forbid)(\s+){2}([^\n]+)' \
+    | string replace -r -i \
+        '(\s+)(.+)(\s+)(allow|warn|deny|forbid)(\s+){2}([^\n]+)' '$2 $6' \
+    | egrep -v '^$' \
+    | egrep -v ':$' \
+    | egrep -v '^(allow|warn|deny|forbid)$' \
+    | egrep -v '^([a-z\-]+)(\s+)(allow|warn|deny|forbid)')
 
-for i in (seq (count $rust_codegen))
-    if test (math $i%2) -eq 0
-        set -l flag $rust_codegen[(math $i-1)]
-        {{r}} -x -s W -l warn -a "$flag" -d "$rust_codegen[$i]"
-        {{r}} -x -s A -l allow -a "$flag" -d "$rust_codegen[$i]"
-        {{r}} -x -s D -l deny -a "$flag" -d "$rust_codegen[$i]"
-        {{r}} -x -s F -l forbid -a "$flag" -d "$rust_codegen[$i]"
-    end
+for line in $rust_docs
+    set docs (string split -m 1 ' ' $line)
+    {{r}} -x -s W -l warn -a "$docs[1]" -d "$docs[2]"
+    {{r}} -x -s A -l allow -a "$docs[1]" -d "$docs[2]"
+    {{r}} -x -s D -l deny -a "$docs[1]" -d "$docs[2]"
+    {{r}} -x -s F -l forbid -a "$docs[1]" -d "$docs[2]"
 end
 
 set -e rust_codegen
