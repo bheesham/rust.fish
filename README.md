@@ -1,6 +1,8 @@
 rust.fish
 =========
 
+*These changes have been merged upstream to the fish shell project!*
+
 Tab completions for `rustc` and `cargo`!
 
 Installation
